@@ -320,6 +320,62 @@
             ]
         },
         {
+            "name": "stel",
+            "inherit": "firefox",
+            "fileName": "yomitan-stel.zip",
+            "modifications": [
+                {
+                    "action": "replace",
+                    "path": [
+                        "name"
+                    ],
+                    "pattern": "^.*$",
+                    "patternFlags": "",
+                    "replacement": "$& (stel)"
+                },
+                {
+                    "action": "set",
+                    "path": [
+                        "version"
+                    ],
+                    "value": "2024.7.26"
+                },
+                {
+                    "action": "replace",
+                    "path": [
+                        "description"
+                    ],
+                    "pattern": "^(.*)(?:\\.\\s*)?$",
+                    "patternFlags": "",
+                    "replacement": "$1. This is a private fork."
+                },
+                {
+                    "action": "replace",
+                    "path": [
+                        "author"
+                    ],
+                    "pattern": "^.*$",
+                    "patternFlags": "",
+                    "replacement": "$& (and stel)"
+                },
+                {
+                    "action": "set",
+                    "path": [
+                        "browser_specific_settings",
+                        "gecko",
+                        "id"
+                    ],
+                    "value": "yomitan@gemini"
+                }
+            ],
+            "excludeFiles": [
+                "sw.js",
+                "offscreen.html",
+                "js/background/offscreen.js",
+                "js/background/offscreen-main.js"
+            ]
+        },
+        {
             "name": "safari",
             "modifications": [
                 {
