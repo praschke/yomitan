@@ -333,7 +333,9 @@ export class Backend {
 
             this._applyOptions('background');
 
-            this._attachOmniboxListener();
+            if (typeof chrome.omnibox !== 'undefined') {
+                this._attachOmniboxListener();
+            }
 
             const options = this._getProfileOptions({current: true}, false);
             if (options.general.showGuide) {
