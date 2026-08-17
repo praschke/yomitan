@@ -14,10 +14,10 @@ permissions:
   contents: read
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "stel" ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "master" ]
+    branches: [ "stel" ]
   schedule:
     - cron: '31 13 * * 3'
 
