@@ -14,15 +14,17 @@ jobs:
       contents: write
     outputs:
       hashes: ${{ steps.hash.outputs.hashes }}
+      upload_url: ${{ steps.release.outputs.upload_url }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: "package.json"
+          package-manager-cache: false
 
-      # intentially do not use cache to keep the build more comprehensible and sandboxed
+      # do not use cache to keep the build more comprehensible and sandboxed
       - name: Install dependencies
         run: npm ci
 
@@ -41,19 +43,22 @@ jobs:
 
       - name: Release
         id: release
-        uses: softprops/action-gh-release@6cbd405e2c4e67a21c47fa9e383d020e4e28b836 # pin@v2
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           generate_release_notes: true
           prerelease: true
           files: builds/*
 
-      - name: Dispatch publish-stel
-        uses: aurelien-baudet/workflow-dispatch@3133c5d135c7dbe4be4f9793872b6ef331b53bc7 # pin@v2
-        with:
-          workflow: publish-stel
-          token: ${{ secrets.GITHUB_TOKEN }}
-          wait-for-completion: false
-          inputs: '{ "upload_url": "${{ steps.release.outputs.upload_url }}" }'
+  publish-stel:
+    needs: [build]
+    permissions:
+      actions: read # To read the workflow path.
+      id-token: write # To sign the provenance.
+      contents: write # To add assets to a release.
+    uses: ./.github/workflows/publish-stel.yml
+    with:
+      upload_url: ${{ needs.build.outputs.upload_url }}
+    secrets: inherit
 
   provenance:
     needs: [build]
@@ -61,7 +66,7 @@ jobs:
       actions: read # To read the workflow path.
       id-token: write # To sign the provenance.
       contents: write # To add assets to a release.
-    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@f7dd8c54c2067bafc12ca7a55595d5ee9b75204a # v2.1.0
     with:
       base64-subjects: "${{ needs.build.outputs.hashes }}"
       upload-assets: true
